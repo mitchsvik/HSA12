@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  redis_m:
+    image: redis:7.2.4
+    container_name: hsa12_redis_m
+    volumes:
+      - redis_m_data:/data
+      - ./redis_m/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    ports:
+      - 6379:6379
+    command: redis-server /usr/local/etc/redis/redis.conf
+  
+  redis_r:
+    image: redis:7.2.4
+    container_name: hsa12_redis_r
+    volumes:
+      - redis_r_data:/data
+    ports:
+      - 6380:6379
+    command: redis-server --slaveof redis_m 6379
+  
+  redis_s:
+    image: redis:7.2.4
+    container_name: hsa13_redis_s
+    ports:
+      - 26379:26379
+    links:
+      - redis_m
+    restart: always
+    depends_on:
+      - redis_m
+      - redis_r
+
+volumes:
+  redis_m_data: {}
+  redis_r_data: {}
