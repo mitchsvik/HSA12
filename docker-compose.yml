@@ -34,6 +34,18 @@ services:
       - redis_m
       - redis_r
     command: redis-server /usr/local/etc/redis/redis.conf --sentinel
+    
+  test:
+    build: ./application
+    working_dir: /application
+    container_name: hsa12_test
+    volumes:
+      - ./application:/application:rw
+    depends_on:
+      - redis_m
+      - redis_r
+      - redis_s
+    command: python main.py
 
 volumes:
   redis_m_data: {}
