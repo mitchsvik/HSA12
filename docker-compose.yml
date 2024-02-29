@@ -23,6 +23,8 @@ services:
   redis_s:
     image: redis:7.2.4
     container_name: hsa13_redis_s
+    volumes:
+       - ./redis_sentinel/redis.conf:/usr/local/etc/redis/redis.conf:rw
     ports:
       - 26379:26379
     links:
@@ -31,6 +33,7 @@ services:
     depends_on:
       - redis_m
       - redis_r
+    command: redis-server /usr/local/etc/redis/redis.conf --sentinel
 
 volumes:
   redis_m_data: {}
